@@ -1,4 +1,4 @@
-# sunny-tech-containers-quiz
+# snow-camp-containers-quiz
 
 ## Pre-requisites
 
