@@ -33,18 +33,26 @@ IMG_DIGEST=$(docker inspect 79352h8v.c1.de1.container-registry.ovh.net/public/go
 #pe 'cosign sign --key cosign.key 79352h8v.c1.de1.container-registry.ovh.net/public/gophers-api'
 pe "cosign sign --key cosign.key $IMG_DIGEST --tlog-upload=false"
 
+# On peut meme ajouter une annotation/information a notre signature
+pe "cosign sign -a conf=snowcamp --key cosign.key $IMG_DIGEST"
+
 # Verify the image is signed with cosign
-pe 'cosign verify 79352h8v.c1.de1.container-registry.ovh.net/public/gophers-api --key cosign.pub | jq'
+pe 'cosign verify 79352h8v.c1.de1.container-registry.ovh.net/public/gophers-api --key cosign.pub -o text | jq'
 
 p 'Vérification sur le OVHcloud private registry: 79352h8v.c1.de1.container-registry.ovh.net'
 # Access to the registry, green check mark
 # Click on the > icon that displays the associated cosign signature information
 # Cosign créé une signature qui est attachée a l'image sous forme de metadata externe (comme un nouveau tag specifique), mais ne modifie pas l'image orignale ni ne créé une copie
 
-# Le tag a la forme sha256:<digest>.sig ppur s'assurer qu'il correspond a l'image d'origine
+# Le tag a la forme sha256:<digest>.sig pour s'assurer qu'il correspond a l'image d'origine
+# La signature est un "accessory" d'une image et elle est associée a un nouveau tag
+pe "cosign triangulate 79352h8v.c1.de1.container-registry.ovh.net/public/gophers-api"
+
+# Inspection du manifest de ce tag special
+pe "crane manifest $(cosign triangulate 79352h8v.c1.de1.container-registry.ovh.net/public/gophers-api) | jq ."
 
 # Montrer que l'image n'est pas modifiée avant/apres ?
-# docker pull de la signature pour voir quelle trocnhe ça a ?
+# docker pull de la signature pour voir quelle tronche ça a ?
 
 # Verif sur le docker hub? ou montrer uniquement sur Harbor suffit ?
 #p 'Vérification sur le Docker Hub: https://hub.docker.com/r/scraly/gophers-api/tags'
