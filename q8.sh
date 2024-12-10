@@ -8,7 +8,7 @@
 # hide the evidence
 clear
 
-# Pre-requisites: cosign, docker, jq
+# Pre-requisites: cosign, docker, jq, crane
 
 # Remove all signatures from an image 
 # cosign clean
@@ -30,11 +30,9 @@ pe "docker inspect 79352h8v.c1.de1.container-registry.ovh.net/public/gophers-api
 IMG_DIGEST=$(docker inspect 79352h8v.c1.de1.container-registry.ovh.net/public/gophers-api | jq -r '.[0].RepoDigests[0]')
 
 # sign the OCI artifact and push to the Managed Private Registry/Harbor instance
+# and store the transparency log (metadata) in the public Rekor server at https://rekor.sigstore.dev/ (to verify the signature afterward)
 #pe 'cosign sign --key cosign.key 79352h8v.c1.de1.container-registry.ovh.net/public/gophers-api'
-pe "cosign sign --key cosign.key $IMG_DIGEST --tlog-upload=false"
-
-# On peut meme ajouter une annotation/information a notre signature
-pe "cosign sign -a conf=snowcamp --key cosign.key $IMG_DIGEST"
+pe "cosign sign --key cosign.key $IMG_DIGEST"
 
 # Verify the image is signed with cosign
 pe 'cosign verify 79352h8v.c1.de1.container-registry.ovh.net/public/gophers-api --key cosign.pub -o text | jq'
@@ -50,6 +48,14 @@ pe "cosign triangulate 79352h8v.c1.de1.container-registry.ovh.net/public/gophers
 
 # Inspection du manifest de ce tag special
 pe "crane manifest $(cosign triangulate 79352h8v.c1.de1.container-registry.ovh.net/public/gophers-api) | jq ."
+
+
+p "Tips: On peut meme ajouter une annotation/information a notre signature"
+pe "cosign sign -a conf=snowcamp --key cosign.key $IMG_DIGEST"
+
+# Verify the image is signed with cosign
+pe 'cosign verify 79352h8v.c1.de1.container-registry.ovh.net/public/gophers-api --key cosign.pub -o text | jq'
+
 
 # Montrer que l'image n'est pas modifiée avant/apres ?
 # docker pull de la signature pour voir quelle tronche ça a ?
