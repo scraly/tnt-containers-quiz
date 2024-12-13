@@ -49,6 +49,10 @@ pe "cosign triangulate 79352h8v.c1.de1.container-registry.ovh.net/public/gophers
 # Inspection du manifest de ce tag special
 pe "crane manifest $(cosign triangulate 79352h8v.c1.de1.container-registry.ovh.net/public/gophers-api) | jq ."
 
+# Ce n'est pas une image, on ne peut pas la puller
+# $ docker pull 79352h8v.c1.de1.container-registry.ovh.net/public/gophers-api:sha256-b229a8c3a6b9fc5873c97e60636e58fa0cee8cec449104cf3fa2bfa6639f3833.sig
+#sha256-b229a8c3a6b9fc5873c97e60636e58fa0cee8cec449104cf3fa2bfa6639f3833.sig: Pulling from public/gophers-api
+#failed to unpack image on snapshotter overlayfs: mismatched image rootfs and manifest layers
 
 p "Tips: On peut meme ajouter une annotation/information a notre signature"
 pe "cosign sign -a conf=snowcamp --key cosign.key $IMG_DIGEST"
