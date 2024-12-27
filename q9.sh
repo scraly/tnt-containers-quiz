@@ -9,35 +9,37 @@ clear
 
 cd q9
 
-# Pre-requisites: tar, crane, buildah, (?oras?)
+# Pre-requisites: docker scout , trivy, bom
 
-p 'Let'\''s use crane!'
-pe 'cat lorem_ipsum.txt'
-pe 'tar cvzf lorem_ipsum.tar.gz lorem_ipsum.txt'
-p 'crane auth login -u sunnytech  79352h8v.c1.de1.container-registry.ovh.net'
-crane auth login -u sunnytech -p SunnyTech2024 79352h8v.c1.de1.container-registry.ovh.net
-pe 'crane append -b registry.redhat.io/ubi9/ubi-micro:latest -f lorem_ipsum.tar.gz -t  79352h8v.c1.de1.container-registry.ovh.net/public/lorem:crane'
-pe 'podman run 79352h8v.c1.de1.container-registry.ovh.net/public/lorem:crane ls -l lorem_ipsum.txt'
-rm lorem_ipsum.tar.gz
+# install trivy
+# curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sudo sh -s -- -b /usr/local/bin v0.58.1
 
-p 'Let'\''s try buildah!'
-pe 'buildah from registry.redhat.io/ubi9/ubi:latest'
-pe 'buildah add ubi-working-container lorem_ipsum.txt /tmp'
-pe 'buildah commit ubi-working-container docker://79352h8v.c1.de1.container-registry.ovh.net/public/lorem:buildah'
-pe 'podman run 79352h8v.c1.de1.container-registry.ovh.net/public/lorem:buildah ls -l /tmp/lorem_ipsum.txt'
-buildah rm ubi-working-container
+# install docker scout (no need if you have docker desktop)
+#  curl -fsSL https://raw.githubusercontent.com/docker/scout-cli/main/install.sh -o install-scout.sh
+#  sudo sh install-scout.sh
 
+# install bom
+# go install sigs.k8s.io/bom/cmd/bom@latest
 
-# skopeo copy docker://registry.redhat.io/ubi9/ubi-micro:latest docker://sherinefedora:5000/ubi9/ubi-micro:latest
-# oras attach --artifact-type dev.cosignproject.cosign/signature sherinefedora:5000/ubi9/ubi-micro:latest signature:application/vnd.dev.cosign.simplesigning.v1+json
-# # Uploading ee4128799e61 signature
-# # Uploaded  ee4128799e61 signature
-# # Attached to [registry] sherinefedora:5000/ubi9/ubi-micro@sha256:3313e52bb1aad4017a0c35f9f2ae35cf8526eeeb83f6ecbec449ba9c5cb9cb07
-# # Digest: sha256:0210b5f0d75da9cd5eda61002c0bf5872ac588a7629d87e18635f8bd8d1df4a
-# skopeo inspect docker://sherinefedora:5000/ubi9/ubi-micro:latest
-# oras discover sherinefedora:5000/ubi9/ubi-micro:latest
-# # Discovered 1 artifact referencing latest
-# # Digest: sha256:3313e52bb1aad4017a0c35f9f2ae35cf8526eeeb83f6ecbec449ba9c5cb9cb07
-# # 
-# # Artifact Type                        Digest
-# # dev.cosignproject.cosign/signature   sha256:0210b5f0d75da9cd5eda61002c0bf5872ac588a7629d87e18635f8bd8d1df4a0
+p '# Générer un SBOM avec Trivy'
+pe 'skopeo copy docker://registry.redhat.io/ubi9/ubi-micro:latest docker://79352h8v.c1.de1.container-registry.ovh.net/public/ubi9/ubi-micro:latest'
+pe 'trivy image --format spdx-json --output /tmp/result.json 79352h8v.c1.de1.container-registry.ovh.net/public/ubi9/ubi-micro:latest'
+
+p 'Visualiser le spdx, avec bom'
+pe 'bom document outline /tmp/result.json'
+
+pe 'bom document outline scout_sbom.json'
+pe 'bom document outline bom_sbom.json'
+
+p '# Attachons le sbom à l''\image'
+pe 'oras attach 79352h8v.c1.de1.container-registry.ovh.net/public/ubi9/ubi-micro:latest --artifact-type application/spdx+json trivy_sbom.json:text/spdx+json'
+
+p '# Regardons la registry... https://79352h8v.c1.de1.container-registry.ovh.net/harbor/projects/2/repositories/ubi9%2Fubi-micro/artifacts-tab'
+
+pe 'oras discover 79352h8v.c1.de1.container-registry.ovh.net/public/ubi9/ubi-micro:latest'
+
+p 'oras discover sherinefedora:5000/ubi9/ubi-micro:latest'
+cat oras_discover_distrib.out
+
+cd ..
+p "Fini !"

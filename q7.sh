@@ -28,3 +28,5 @@ p '# Verification: et le blob?'
 p "curl https://cpe6munf.c1.de1.container-registry.ovh.net/v2/public/ubi9/ubi-micro/blobs/$blob_digest -o /tmp/blob"
 curl https://cpe6munf.c1.de1.container-registry.ovh.net/v2/public/ubi9/ubi-micro/blobs/$blob_digest -o /tmp/blob
 pe 'ls -l /tmp/blob'
+
+p "Fini !"
