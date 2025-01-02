@@ -1,3 +1,4 @@
+#!/bin/bash
 
 ########################
 # include the magic
@@ -9,7 +10,7 @@ clear
 
 cd q9
 
-# Pre-requisites: docker scout , trivy, bom
+# Pre-requisites: docker scout, trivy, bom
 
 # install trivy
 # curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sudo sh -s -- -b /usr/local/bin v0.58.1
@@ -21,7 +22,7 @@ cd q9
 # install bom
 # go install sigs.k8s.io/bom/cmd/bom@latest
 
-p '# Générer un SBOM avec Trivy'
+p 'Générer un SBOM avec Trivy'
 pe 'skopeo copy docker://registry.redhat.io/ubi9/ubi-micro:latest docker://79352h8v.c1.de1.container-registry.ovh.net/public/ubi9/ubi-micro:latest'
 pe 'trivy image --format spdx-json --output /tmp/result.json 79352h8v.c1.de1.container-registry.ovh.net/public/ubi9/ubi-micro:latest'
 
