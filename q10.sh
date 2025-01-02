@@ -11,11 +11,12 @@
 
 cd gophers-api
 
+p "Build d'une image"
 pe 'docker build . -t gophers-api:friday'
 
 pe 'docker image ls gophers-api'
 
-# Change golang 1.20 to 1.21
+p "Changement de golang 1.20 vers 1.21"
 pe 'vi Dockerfile'
 
 pe 'docker build . -t gophers-api:friday'
@@ -24,7 +25,9 @@ pe 'docker image ls gophers-api'
 
 pe 'docker images -f dangling=true'
 
-p 'Suppression des dangling images, pour libérer de la place'
-pe "docker rmi $(docker images -f dangling=true -q)"
+p "Suppression des dangling images, pour libérer de la place"
+pe "docker rmi \$(docker images -f dangling=true -q)"
 
 cd ..
+
+# /!\ Les dangling images n'existent pas avec containerd en image store!

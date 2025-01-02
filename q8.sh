@@ -11,7 +11,7 @@ clear
 # Pre-requisites: cosign, docker, jq, crane
 
 # Remove all signatures from an image 
-# cosign clean 79352h8v.c1.de1.container-registry.ovh.net/public/gophers-api -f
+#cosign clean 79352h8v.c1.de1.container-registry.ovh.net/public/gophers-api -f
 
 # QUESTION 8
 
@@ -24,16 +24,17 @@ pe 'cosign generate-key-pair'
 #p 'docker login -u snowcamp 79352h8v.c1.de1.container-registry.ovh.net'
 #docker login -u snowcamp -p SnowCamp2025 79352h8v.c1.de1.container-registry.ovh.net
 
+p "Il est conseillé de signer une image a partir de son digest et non de son tag"
 p "Récupération du digest de l'image"
-# Il est conseillé de signer une image a partir de son digest et non de son tag.
 pe "docker inspect 79352h8v.c1.de1.container-registry.ovh.net/public/gophers-api | jq -r '.[0].RepoDigests[0]'"
 IMG_DIGEST=$(docker inspect 79352h8v.c1.de1.container-registry.ovh.net/public/gophers-api | jq -r '.[0].RepoDigests[0]')
 
 # sign the OCI artifact and push to the Managed Private Registry/Harbor instance and store the transparency log (metadata) in the public Rekor server"
 # at https://rekor.sigstore.dev/ (to verify the signature afterward)
-p "Signature de l'artefact OCI, push sur le private registry (et sauvegarde du transparency log (metadata) sur le public Rekor server"
+p "Signature de l'artefact OCI et push sur le private registry"
+#(et sauvegarde du transparency log (metadata) sur le public Rekor server)
 #pe 'cosign sign --key cosign.key 79352h8v.c1.de1.container-registry.ovh.net/public/gophers-api'
-pe "cosign sign --key cosign.key $IMG_DIGEST"
+pe "cosign sign -y --key cosign.key $IMG_DIGEST"
 
 p "Vérification de l'image signée avec cosign"
 pe 'cosign verify 79352h8v.c1.de1.container-registry.ovh.net/public/gophers-api --key cosign.pub -o text | jq'
@@ -57,22 +58,21 @@ pe "crane manifest $(cosign triangulate 79352h8v.c1.de1.container-registry.ovh.n
 #failed to unpack image on snapshotter overlayfs: mismatched image rootfs and manifest layers
 
 p "Tips: On peut meme ajouter une annotation/information a notre signature"
-pe "cosign sign -a conf=snowcamp --key cosign.key $IMG_DIGEST"
+pe "cosign sign -y -a conf=snowcamp --key cosign.key $IMG_DIGEST"
 
 # Verify the image is signed with cosign
-pe 'cosign verify 79352h8v.c1.de1.container-registry.ovh.net/public/gophers-api --key cosign.pub -o text | jq'
+pe "cosign verify 79352h8v.c1.de1.container-registry.ovh.net/public/gophers-api --key cosign.pub -o text | jq"
 
+p "Fini !"
+
+# Clean image privée et publique
+rm cosign.key cosign.pub 
 
 # Montrer que l'image n'est pas modifiée avant/apres ?
 # docker pull de la signature pour voir quelle tronche ça a ?
 
 # Verif sur le docker hub? ou montrer uniquement sur Harbor suffit ?
 #p 'Vérification sur le Docker Hub: https://hub.docker.com/r/scraly/gophers-api/tags'
-
-p "Fini !"
-
-# Clean image privée et publique
-rm cosign.key cosign.pub 
 
 # Image reference 79352h8v.c1.de1.container-registry.ovh.net/public/gophers-api uses a tag, not a digest, to identify the image to sign.
 #    This can lead you to sign a different image than the intended one. Please use a

@@ -8,7 +8,3 @@ FROM alpine:latest AS final
 COPY --from=builder /build/gophers-api .
 EXPOSE 8080
 CMD ["./gophers-api"]
-
-
-
-
