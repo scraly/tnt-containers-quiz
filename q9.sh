@@ -23,7 +23,7 @@ cd q9
 # go install sigs.k8s.io/bom/cmd/bom@latest
 
 p 'Générer un SBOM avec Trivy'
-pe 'skopeo copy docker://registry.redhat.io/ubi9/ubi-micro:latest docker://79352h8v.c1.de1.container-registry.ovh.net/public/ubi9/ubi-micro:latest'
+pe 'skopeo copy docker://registry.redhat.io/ubi9/ubi-micro:latest docker://79352h8v.c1.de1.container-registry.ovh.net/public/ubi9/ubi-micro:latest --remove-signatures'
 pe 'trivy image --format spdx-json --output /tmp/result.json 79352h8v.c1.de1.container-registry.ovh.net/public/ubi9/ubi-micro:latest'
 
 p 'Visualiser le spdx, avec bom'
