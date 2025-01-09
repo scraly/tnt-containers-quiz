@@ -37,7 +37,8 @@ p "Signature de l'artefact OCI et push sur le private registry"
 pe "cosign sign -y --key cosign.key $IMG_DIGEST"
 
 p "Vérification de l'image signée avec cosign"
-pe 'cosign verify 79352h8v.c1.de1.container-registry.ovh.net/public/gophers-api --key cosign.pub -o text | jq'
+#pe 'cosign verify 79352h8v.c1.de1.container-registry.ovh.net/public/gophers-api --key cosign.pub -o text | jq'
+pe "cosign verify $IMG_DIGEST --key cosign.pub -o text | jq"
 
 p 'Vérification sur le OVHcloud private registry: 79352h8v.c1.de1.container-registry.ovh.net'
 # Access to the registry, green check mark
@@ -46,7 +47,7 @@ p 'Vérification sur le OVHcloud private registry: 79352h8v.c1.de1.container-reg
 
 # Le tag a la forme sha256:<digest>.sig pour s'assurer qu'il correspond a l'image d'origine
 # La signature est un "accessory" d'une image et elle est associée a un nouveau tag
-p 'Affichage du tag sous la forme sha256:<digest>.sig'
+p 'Affichage du tag sous la forme <sha256>:<digest>.sig'
 pe "cosign triangulate 79352h8v.c1.de1.container-registry.ovh.net/public/gophers-api"
 
 p 'Inspection du manifest de ce tag special'
@@ -61,7 +62,7 @@ p "Tips: On peut meme ajouter une annotation/information a notre signature"
 pe "cosign sign -y -a conf=snowcamp --key cosign.key $IMG_DIGEST"
 
 # Verify the image is signed with cosign
-pe "cosign verify 79352h8v.c1.de1.container-registry.ovh.net/public/gophers-api --key cosign.pub -o text | jq"
+pe "cosign verify $IMG_DIGEST --key cosign.pub -o text | jq"
 
 p "Fini !"
 

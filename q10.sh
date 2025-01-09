@@ -28,6 +28,6 @@ pe 'docker images -f dangling=true'
 p "Suppression des dangling images, pour libérer de la place"
 pe "docker rmi \$(docker images -f dangling=true -q)"
 
-cd ..
+p "/!\ Docker only - Les dangling images n'existent pas avec containerd en image store"
 
-# /!\ Les dangling images n'existent pas avec containerd en image store!
+cd ..
