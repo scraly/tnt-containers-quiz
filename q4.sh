@@ -17,9 +17,9 @@ cd gophers-api
 
 p 'docker login -u snowcamp 79352h8v.c1.de1.container-registry.ovh.net'
 docker login -u sunnytech -p SunnyTech2024 79352h8v.c1.de1.container-registry.ovh.net
-pe 'docker build -t 79352h8v.c1.de1.container-registry.ovh.net/public/gophers-api .'
-pe 'docker image ls 79352h8v.c1.de1.container-registry.ovh.net/public/gophers-api'
-pe 'docker push 79352h8v.c1.de1.container-registry.ovh.net/public/gophers-api'
+pe 'docker build -t 79352h8v.c1.de1.container-registry.ovh.net/public/gophers-api:latest .'
+pe 'docker image ls 79352h8v.c1.de1.container-registry.ovh.net/public/gophers-api:latest'
+pe 'docker push 79352h8v.c1.de1.container-registry.ovh.net/public/gophers-api:latest'
 p 'Vérification sur le OVHcloud private registry: 79352h8v.c1.de1.container-registry.ovh.net'
 # 22.6MB en local → 10.82MiB sur OVHcloud Managed Private Registry / Harbor ;-)
 p 'Vérification sur le Docker Hub: https://hub.docker.com/r/scraly/gophers-api/tags'
