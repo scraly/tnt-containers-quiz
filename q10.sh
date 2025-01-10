@@ -5,6 +5,9 @@
 ########################
 . bin/demo-magic.sh
 
+# hide the evidence
+clear
+
 # Pre-requisites: docker
 
 # QUESTION 10
