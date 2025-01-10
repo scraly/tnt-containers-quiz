@@ -8,7 +8,7 @@
 # hide the evidence
 clear
 
-# Pre-requisites: docker
+# Pre-requisites: docker, sed
 
 # QUESTION 10
 
