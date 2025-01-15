@@ -12,7 +12,7 @@ clear
 
 # QUESTION 7
 p 'Copie de ubi-micro dans la registry OVH'
-p 'skopeo login -u sherine cpe6munf.c1.de1.container-registry.ovh.net'
+
 skopeo login -u sherine -p Sh\&r1n\&@ cpe6munf.c1.de1.container-registry.ovh.net
 pe 'skopeo copy docker://registry.redhat.io/ubi9/ubi-micro:latest docker://cpe6munf.c1.de1.container-registry.ovh.net/public/ubi9/ubi-micro:latest --remove-signatures'
 p 'Inspection de l'\''image: Son digest? celui de sa layer principale?'
