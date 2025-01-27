@@ -21,9 +21,6 @@ clear
 p 'Génération de la clé privé et de la clé publique'
 pe 'cosign generate-key-pair'
 
-#p 'docker login -u snowcamp 79352h8v.c1.de1.container-registry.ovh.net'
-#docker login -u snowcamp -p SnowCamp2025 79352h8v.c1.de1.container-registry.ovh.net
-
 p "Il est conseillé de signer une image a partir de son digest et non de son tag"
 p "Récupération du digest de l'image"
 pe "docker inspect 79352h8v.c1.de1.container-registry.ovh.net/public/gophers-api | jq -r '.[0].RepoDigests[0]'"
@@ -59,7 +56,7 @@ pe "crane manifest $(cosign triangulate 79352h8v.c1.de1.container-registry.ovh.n
 #failed to unpack image on snapshotter overlayfs: mismatched image rootfs and manifest layers
 
 p "Tips: On peut meme ajouter une annotation/information a notre signature"
-pe "cosign sign -y -a conf=snowcamp --key cosign.key $IMG_DIGEST"
+pe "cosign sign -y -a conf=tnt --key cosign.key $IMG_DIGEST"
 
 # Verify the image is signed with cosign
 pe "cosign verify $IMG_DIGEST --key cosign.pub -o text | jq"

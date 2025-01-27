@@ -1,4 +1,4 @@
-# snow-camp-containers-quiz
+# tnt-containers-quiz
 
 ## Pre-requisites
 
