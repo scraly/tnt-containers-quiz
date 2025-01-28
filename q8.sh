@@ -42,7 +42,7 @@ p 'Vérification sur le OVHcloud private registry: 79352h8v.c1.de1.container-reg
 # Click on the > icon that displays the associated cosign signature information
 # Cosign créé une signature qui est attachée a l'image sous forme de metadata externe (comme un nouveau tag specifique), mais ne modifie pas l'image orignale ni ne créé une copie
 
-# Le tag a la forme sha256:<digest>.sig pour s'assurer qu'il correspond a l'image d'origine
+# Le tag a la forme sha256-<digest>.sig pour s'assurer qu'il correspond a l'image d'origine
 # La signature est un "accessory" d'une image et elle est associée a un nouveau tag
 p 'Affichage du tag sous la forme <sha256>:<digest>.sig'
 pe "cosign triangulate 79352h8v.c1.de1.container-registry.ovh.net/public/gophers-api"
