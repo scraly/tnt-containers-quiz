@@ -44,7 +44,7 @@ p 'Vérification sur le OVHcloud private registry: 79352h8v.c1.de1.container-reg
 
 # Le tag a la forme sha256-<digest>.sig pour s'assurer qu'il correspond a l'image d'origine
 # La signature est un "accessory" d'une image et elle est associée a un nouveau tag
-p 'Affichage du tag sous la forme <sha256>:<digest>.sig'
+p 'Affichage du tag sous la forme sha256-<digest>.sig'
 pe "cosign triangulate 79352h8v.c1.de1.container-registry.ovh.net/public/gophers-api"
 
 p 'Inspection du manifest de ce tag special'
